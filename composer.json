@@ -1,0 +1,16 @@
+{   
+	"name": "safevalue/safevalue",
+    "description": "Cria valor seguro, com a possibilidade de checar se o valor foi alterado.",
+    "keywords": ["safevalue"],
+    "authors": [
+        {
+            "name": "Elias da Rosa",
+            "email": "elias@eliasdarosa.com.br",
+            "homepage": "http://www.eliasdarosa.com.br/blog"
+        }
+    ],
+    "require": {
+    	"php": ">=5.3.0",
+        "monolog/monolog": "1.2.*"
+    }
+}
