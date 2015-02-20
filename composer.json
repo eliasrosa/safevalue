@@ -1,7 +1,9 @@
-{   
-	"name": "safevalue/safevalue",
+{
+	"name": "eliasrosa/safevalue",
     "description": "Cria valor seguro, com a possibilidade de checar se o valor foi alterado.",
-    "keywords": ["safevalue"],
+    "keywords": ["safevalue", "eliasrosa"],
+    "homepage": "https://github.com/eliasrosa/safevalue",
+    "license": "MIT",
     "authors": [
         {
             "name": "Elias da Rosa",
@@ -10,7 +12,6 @@
         }
     ],
     "require": {
-    	"php": ">=5.3.0",
-        "monolog/monolog": "1.2.*"
+        
     }
 }
