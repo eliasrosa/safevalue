@@ -11,7 +11,14 @@
             "homepage": "http://www.eliasdarosa.com.br/blog"
         }
     ],
-    "require": {
-        
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "4.7.*@dev"
+    },
+    "autoload": {
+    	"classmap": [
+    		"class",
+    		"tests"
+    	]
     }
 }
