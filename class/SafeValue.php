@@ -2,34 +2,44 @@
 
 namespace Eliasrosa;
 
+use DateTime;
+use DateInterval;
+
 class SafeValue
 {
-    const DV = ':';
-
     //
     private $custom_key = null;
     private $rand_key = null;
+    private $expire = null;
 
 
     /**
      * Cria um valor visivel e seguro
-     * 
-     * @param string $value     
+     *
+     * @param string $value
      * @return string (base64_encode)
      */
     public function encode($value)
     {
+        //
         $value = base64_encode($value);
 
+        //
+        $sha1 = sha1(join(':', [
+            $this->getCustomKey(),
+            $this->getRandKey(),
+            $value,
+            $this->expire
+        ]));
 
-        $sha1 = substr(sha1($this->getCustomKey() . self::DV . $this->getRandKey() . self::DV . $value), 0, 15);
-        
-        $safeValue = sprintf('%s'. self::DV .'%s'. self::DV .'%s', 
-            $value, 
-            $sha1, 
-            $this->getRandKey()
-        );
-        
+        //
+        $safeValue = join(':', [
+            $value,
+            $sha1,
+            $this->getRandKey(),
+            $this->expire
+        ]);
+
         return $safeValue;
     }
 
@@ -37,25 +47,43 @@ class SafeValue
 
     /**
      * Decodifica o valor
-     * 
-     * @return retorna valor original ou false
+     *
+     * @return valor original/FALSE
      */
     public function decode($safeValue)
     {
-
-        // 
-        $a = explode(self::DV, $safeValue);     
+        //
+        $a = explode(':', $safeValue);
         $v = base64_decode($a[0]);
-        
-        // set randon key
-        $this->setRandKey($a[2]);
-        $b = explode(self::DV, $v2 = $this->encode($v));
 
-        // 
-        if ($a[0] == $b[0] && 
-            $a[1] == $b[1] && 
+        //
+        $this->expire = $a[3];
+
+        // set randon key - hash
+        $this->setRandKey($a[2]);
+
+        //
+        $b = explode(':', $this->encode($v));
+
+        //
+        if ($a[0] == $b[0] &&
+            $a[1] == $b[1] &&
             $a[2] == $b[2]) {
-            
+
+            // verifica se está expirado
+            if($a[3] != ""){
+
+                $now = new DateTime('now');
+                $date_expire = new DateTime(base64_decode($this->expire));
+
+                if($now < $date_expire){
+                    return $v;
+                }else{
+                    return false;
+                }
+
+            }
+
             return $v;
         }
 
@@ -63,10 +91,9 @@ class SafeValue
     }
 
 
-
     /**
     * Get private var $rand_key
-    * 
+    *
     * @return string
     */
     private function getRandKey()
@@ -79,10 +106,9 @@ class SafeValue
     }
 
 
-
     /**
     * Set private var $rand_key
-    * 
+    *
     * @return void();
     */
     private function setRandKey($key)
@@ -93,7 +119,7 @@ class SafeValue
 
     /**
     * Get private var $custom_key
-    * 
+    *
     * @return string
     */
     public function getCustomKey()
@@ -102,15 +128,23 @@ class SafeValue
     }
 
 
-
     /**
     * Set private var $custom_key
-    * 
+    *
     * @return void();
     */
     public function setCustomKey($key)
     {
         $this->custom_key = $key;
+    }
+
+
+    //
+    public function setTimeExpire($expire)
+    {
+        $date = new DateTime('now');
+        $date->add(new DateInterval('PT' . $expire . 'S'));
+        $this->expire = base64_encode($date->format('Y-m-d H:i:s'));
     }
 
 }
