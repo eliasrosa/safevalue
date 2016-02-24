@@ -38,6 +38,28 @@ class SafeValueTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotEquals($this->valor_original, $value_decode);
 	}
 
+	public function testAlterandoSafeValue2()
+	{
+		//
+		$safe_value = $this->foo->encode($this->valor_original);
+	    $value_decode = $this->bar->decode('12211212:DASDSD');
+
+	    //
+		$this->assertNotEquals($this->valor_original, $value_decode);
+	}
+
+	public function testAlterandoSafeValue3()
+	{
+		//
+		$safe_value = $this->foo->encode($this->valor_original);
+	    $value_decode = $this->bar->decode(null);
+
+	    //
+		$this->assertNotEquals($this->valor_original, $value_decode);
+	}
+
+
+
 	public function testSetCustomKey(){
 		$this->foo->setCustomKey('abcdefg12345');
 		$this->bar->setCustomKey('abcdefg12345');

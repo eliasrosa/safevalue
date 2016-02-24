@@ -33,14 +33,14 @@ class SafeValue
         ]));
 
         //
-        $safeValue = join(':', [
+        $safe_value = join(':', [
             $value,
             $sha1,
             $this->getRandKey(),
             $this->expire
         ]);
 
-        return $safeValue;
+        return $safe_value;
     }
 
 
@@ -50,10 +50,16 @@ class SafeValue
      *
      * @return valor original/FALSE
      */
-    public function decode($safeValue)
+    public function decode($safe_value)
     {
         //
-        $a = explode(':', $safeValue);
+        $a = explode(':', $safe_value);
+
+        // verifica o formato
+        if(count($a) < 3 || count($a) > 4){
+            return false;
+        }
+
         $v = base64_decode($a[0]);
 
         //
@@ -139,7 +145,12 @@ class SafeValue
     }
 
 
-    //
+    /**
+    * Set time expire in segunds
+    *
+    * @param int $expire
+    * @return void();
+    */
     public function setTimeExpire($expire)
     {
         $date = new DateTime('now');
