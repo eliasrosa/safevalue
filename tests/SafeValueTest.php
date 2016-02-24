@@ -7,7 +7,7 @@ use Eliasrosa\SafeValue as SafeValue;
 class SafeValueTest extends \PHPUnit_Framework_TestCase
 {
 
-	private $foo, $bar, $custum_key, $value_original;
+	private $foo, $bar, $custum_key, $valor_original;
 
 
 	public function __construct(){
@@ -15,52 +15,82 @@ class SafeValueTest extends \PHPUnit_Framework_TestCase
 		$this->foo = new SafeValue();
 		$this->bar = new SafeValue();
 
-		$this->value_original = 'Test1';
+		$this->valor_original = 'texto exemplo!';
 	}
 
-	public function testCompareIsEquals()
+	public function testSimples()
 	{
 		//
-		$safe_value = $this->foo->encode($this->value_original);
+		$safe_value = $this->foo->encode($this->valor_original);
 	    $value_decode = $this->bar->decode($safe_value);
 
 	    //
-		$this->assertEquals($this->value_original, $value_decode);
+		$this->assertEquals($this->valor_original, $value_decode);
 	}
 
-	public function testCompareIsNotEqualsWithValueDiferent()
+	public function testAlterandoSafeValue()
 	{
 		//
-		$safe_value = $this->foo->encode($this->value_original);
+		$safe_value = $this->foo->encode($this->valor_original);
 	    $value_decode = $this->bar->decode('123' . $safe_value);
 
 	    //
-		$this->assertNotEquals($this->value_original, $value_decode);
+		$this->assertNotEquals($this->valor_original, $value_decode);
 	}
 
-	public function testCompareIsEqualsWithCustonKey(){
+	public function testSetCustomKey(){
 		$this->foo->setCustomKey('abcdefg12345');
 		$this->bar->setCustomKey('abcdefg12345');
 
 		//
-		$safe_value = $this->foo->encode($this->value_original);
+		$safe_value = $this->foo->encode($this->valor_original);
 	    $value_decode = $this->bar->decode($safe_value);
 
 	    //
-		$this->assertEquals($this->value_original, $value_decode);
+		$this->assertEquals($this->valor_original, $value_decode);
 	}
 
 
-	public function testCompareIsNotEqualsWithCustonKeyDiferent(){
+	public function testSetCustomKeyDiferente(){
 		$this->foo->setCustomKey('aBcdefg12345');
-		$this->bar->setCustomKey('abcdefg12345');
+		$this->bar->setCustomKey('ABCDEFG12345');
 
 		//
-		$safe_value = $this->foo->encode($this->value_original);
+		$safe_value = $this->foo->encode($this->valor_original);
 	    $value_decode = $this->bar->decode($safe_value);
 
 	    //
-		$this->assertNotEquals($this->value_original, $value_decode);
+		$this->assertNotEquals($this->valor_original, $value_decode);
 	}
+
+
+	public function testSetTimeExpire5Segundos(){
+
+		// set 2 segunds
+		$this->foo->setTimeExpire(5);
+		$safe_value = $this->foo->encode($this->valor_original);
+	    $value_decode = $this->bar->decode($safe_value);
+
+	    //
+		$this->assertEquals($this->valor_original, $value_decode);
+	}
+
+
+	public function testSetTimeExpire5SegundosComSlep5(){
+
+		// set 2 segunds
+		$this->foo->setTimeExpire(5);
+
+		//
+		$safe_value = $this->foo->encode($this->valor_original);
+
+		sleep(6);
+
+	    $value_decode = $this->bar->decode($safe_value);
+
+	    //
+		$this->assertNotEquals($this->valor_original, $value_decode);
+	}
+
 
 }
